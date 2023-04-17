@@ -9,8 +9,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     volumes:
-      - ./storage/zookeeper/data:/var/lib/zookeeper/data
-      - ./storage/zookeeper/log:/var/lib/zookeeper/log
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
     networks:
       - default
 
@@ -28,7 +28,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
-      - ./storage/kafka:/var/lib/kafka/data
+      - kafka-storage:/var/lib/kafka/data
     networks:
       - default
 
@@ -46,7 +46,12 @@ services:
     networks:
       - default
 
+volumes:
+  zookeeper-data:
+  zookeeper-log:
+  kafka-storage:
+
 networks:
   default:
-    external:
-      name: docker_default
+    name: docker_default
+    external: true

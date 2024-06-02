@@ -1,5 +1,4 @@
-version: '3.7'
-
+version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -13,25 +12,18 @@ services:
       - zookeeper-log:/var/lib/zookeeper/log
     networks:
       - default
-
   kafka:
     image: confluentinc/cp-kafka:latest
     hostname: "kafka"
     container_name: kafka
     depends_on:
       - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    env_file:
+      - kafka.env
     volumes:
       - kafka-storage:/var/lib/kafka/data
     networks:
       - default
-
   kafka-ui:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
@@ -45,12 +37,10 @@ services:
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
     networks:
       - default
-
 volumes:
   zookeeper-data:
   zookeeper-log:
   kafka-storage:
-
 networks:
   default:
     name: docker_default
